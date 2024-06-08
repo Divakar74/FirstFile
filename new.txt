@@ -1,0 +1,1262 @@
+1) a. Write a shell program to find the factorial of a given number.
+
+echo "Enter the number"
+read n
+fact=1
+for((i=1;i<=n ; i++))
+do
+  fact=$(($fact*$i))
+done
+echo "The Factorial of sum is $fact"
+
+--(OR)--
+
+echo "Enter the number"
+read num
+n=$num
+fact=1
+while [$n -gt 0]
+do 
+fact=$((fact*n))
+n=$((n-1))
+done
+echo "The Factorial of $num is $fact"
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ 
+   b. Write a C/C++ program to simulate the copy, edit and rename command.
+
+#include <iostream>
+#include <fstream>
+#include <string>
+#include <cstdio>
+#include <filesystem>
+
+namespace fs = std::filesystem;
+
+void copyFile(const std::string& source, const std::string& destination) {
+    std::ifstream src(source, std::ios::binary);
+    std::ofstream dest(destination, std::ios::binary);
+    
+    if (!src) {
+        std::cerr << "Error: Source file could not be opened." << std::endl;
+        return;
+    }
+
+    if (!dest) {
+        std::cerr << "Error: Destination file could not be created." << std::endl;
+        return;
+    }
+
+    dest << src.rdbuf();
+    std::cout << "File copied successfully from " << source << " to " << destination << "." << std::endl;
+}
+
+void editFile(const std::string& filename) {
+    std::ofstream file(filename, std::ios::app);
+    
+    if (!file) {
+        std::cerr << "Error: File could not be opened for editing." << std::endl;
+        return;
+    }
+
+    std::string line;
+    std::cout << "Enter text to append to the file (type 'EXIT' to finish):" << std::endl;
+
+    while (true) {
+        std::getline(std::cin, line);
+        if (line == "EXIT") break;
+        file << line << std::endl;
+    }
+
+    std::cout << "File edited successfully." << std::endl;
+}
+
+void renameFile(const std::string& oldName, const std::string& newName) {
+    if (!fs::exists(oldName)) {
+        std::cerr << "Error: Source file does not exist." << std::endl;
+        return;
+    }
+
+    try {
+        fs::rename(oldName, newName);
+        std::cout << "File renamed successfully from " << oldName << " to " << newName << "." << std::endl;
+    } catch (fs::filesystem_error& e) {
+        std::cerr << "Error: " << e.what() << std::endl;
+    }
+}
+
+int main() {
+    int choice;
+    std::string source, destination;
+
+    std::cout << "File Operations Menu:" << std::endl;
+    std::cout << "1. Copy File" << std::endl;
+    std::cout << "2. Edit File" << std::endl;
+    std::cout << "3. Rename File" << std::endl;
+    std::cout << "Enter your choice (1-3): ";
+    std::cin >> choice;
+    std::cin.ignore();  // To ignore the newline character after the choice input
+
+    switch (choice) {
+        case 1:
+            std::cout << "Enter source file name: ";
+            std::getline(std::cin, source);
+            std::cout << "Enter destination file name: ";
+            std::getline(std::cin, destination);
+            copyFile(source, destination);
+            break;
+        case 2:
+            std::cout << "Enter file name to edit: ";
+            std::getline(std::cin, source);
+            editFile(source);
+            break;
+        case 3:
+            std::cout << "Enter current file name: ";
+            std::getline(std::cin, source);
+            std::cout << "Enter new file name: ";
+            std::getline(std::cin, destination);
+            renameFile(source, destination);
+            break;
+        default:
+            std::cerr << "Invalid choice!" << std::endl;
+    }
+
+    return 0;
+}
+***************************************************************************************************************************************************************************
+
+2) a. Write a shell program to find the Fibonacci of n numbers.
+
+echo "Enter the number"
+read n
+a=0
+b=1
+i=0
+
+echo "The Fibonacci sequence is:"
+
+while [ $i -lt $n ]
+do
+  echo -n "$a "
+  fn=$((a + b))
+  a=$b
+  b=$fn
+  # Increment the counter
+  i=$((i + 1))
+done
+ 
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+   b. Write a C/C++ program to simulate FCFS/FIFO CPU scheduling algorithm.
+#include<iostream>
+using namespace std;
+
+int main()
+{
+    int n, at[10], bt[10], wt[10], tat[10], ct[10], sum, i, j, k;
+    float totaltat = 0, totalwt = 0;
+    
+    cout << "Enter the total number of processes: ";
+    cin >> n;
+    
+    cout << "\nEnter The Process Arrival Time & Burst Time\n";
+    for (i = 0; i < n; i++)
+    {
+        cout << "Enter Arrival time of process[" << i + 1 << "]: ";
+        cin >> at[i];
+        cout << "Enter Burst time of process[" << i + 1 << "]: ";
+        cin >> bt[i];
+    }
+    
+    // Calculate completion time of processes
+    sum = at[0];
+    for (j = 0; j < n; j++)
+    {
+        sum += bt[j];
+        ct[j] = sum;
+    }
+    
+    // Calculate Turn Around time
+    for (k = 0; k < n; k++)
+    {
+        tat[k] = ct[k] - at[k];
+        totaltat += tat[k];
+    }
+    
+    // Calculate Waiting time
+    for (k = 0; k < n; k++)
+    {
+        wt[k] = tat[k] - bt[k];
+        totalwt += wt[k];
+    }
+    
+    cout << "\nProcess\tAT\tBT\tCT\tTAT\tWT\n\n\n";
+    for (i = 0; i < n; i++)
+    {
+        cout << "\nP" << i + 1 << "\t " << at[i] << "\t " << bt[i] << "\t " << ct[i] << "\t " << tat[i] << "\t " << wt[i] << "\t\n";
+    }
+    
+    cout << "\nAverage Turnaround Time: " << totaltat / n << endl;
+    cout << "\nAverage Waiting Time: " << totalwt / n << endl;
+    
+    return 0;
+}
+*********************************************************************************************************************************************************************
+
+3) a. Write a shell program to perform file operations.
+
+  #!/bin/bash
+
+# Function to create a file
+create_file() {
+    echo "Enter the name of the file to create:"
+    read filename
+    touch "$filename"
+    echo "File '$filename' created."
+}
+
+# Function to rename a file
+rename_file() {
+    echo "Enter the current name of the file to rename:"
+    read oldname
+    echo "Enter the new name of the file:"
+    read newname
+    mv "$oldname" "$newname"
+    echo "File '$oldname' renamed to '$newname'."
+}
+
+# Function to copy a file
+copy_file() {
+    echo "Enter the name of the file to copy:"
+    read filename
+    echo "Enter the destination path:"
+    read destpath
+    cp "$filename" "$destpath"
+    echo "File '$filename' copied to '$destpath'."
+}
+
+# Function to move a file
+move_file() {
+    echo "Enter the name of the file to move:"
+    read filename
+    echo "Enter the destination path:"
+    read destpath
+    mv "$filename" "$destpath"
+    echo "File '$filename' moved to '$destpath'."
+}
+
+# Function to delete a file
+delete_file() {
+    echo "Enter the name of the file to delete:"
+    read filename
+    rm "$filename"
+    echo "File '$filename' deleted."
+}
+
+# Main menu
+while true; do
+    echo "Choose an operation:"
+    echo "1. Create a file"
+    echo "2. Rename a file"
+    echo "3. Copy a file"
+    echo "4. Move a file"
+    echo "5. Delete a file"
+    echo "6. Exit"
+    read choice
+
+    case $choice in
+        1) create_file ;;
+        2) rename_file ;;
+        3) copy_file ;;
+        4) move_file ;;
+        5) delete_file ;;
+        6) break ;;
+        *) echo "Invalid choice, please try again." ;;
+    esac
+done
+
+echo "File operations script completed."
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+   b. Write a C/C++ program to simulate FCFS/FIFO Disk scheduling algorithm.
+
+#include<bits/stdc++.h>
+using namespace std;
+int main() {
+    int n;
+    cout<<"Enter the size of the queue : ";
+    cin>>n;
+    cout<<"Enter the disk queue : ";
+    int disk[n];
+    for(int i=0 ; i<n ; i++) {
+        cin>>disk[i];
+    }
+    cout<<"Enter the initial head position : ";
+    int head;
+    cin>>head;
+    int tot_head_time = 0, no_of_head_movements = 0;
+    for(int i=0 ; i<n ; i++) {
+        tot_head_time += abs(head-disk[i]);
+        head = disk[i];
+        no_of_head_movements++;
+    }
+    cout<<"Toal seek time : "<<tot_head_time;
+    cout<<"\nNumber of head movements : "<<no_of_head_movements;
+}
+
+*********************************************************************************************************************************************************************
+
+4) a. Write a shell program to find the sum of n numbers.
+
+echo "Enter the number"
+read n
+sum=0
+for((i=1;i<=n;i++))
+do
+    sum=$((sum+i))
+done
+
+echo "The sum of $n numbers are $sum"
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+   b. Write a C/C++ program to simulate producer consumer problem.
+
+#include <iostream>
+using namespace std;
+
+int count = 0;
+int front = 0;
+int rear = 0;
+char buffer[25];
+int p_p = 0;
+int c_p = 0;
+
+void producer(int n);
+void consumer(int n);
+void view(int n);
+
+void producer(int n) {
+    char item;
+    if (count < n) {
+        cout << "Enter data: ";
+        cin >> item;
+        buffer[front] = item;
+        front = (front + 1) % 5;
+        count++;
+        if (c_p == 1 && count == 1) {
+            cout << "\nConsumer is now ready\n";
+        }
+    } else {
+        cout << "\nBuffer is full...\n";
+        p_p = 1;
+    }
+}
+
+void consumer(int n) {
+    char item;
+    if (count > 0) {
+        item = buffer[rear];
+        buffer[rear] = ' ';
+        cout << "\nC: " << item << endl;
+        rear = (rear + 1) % 5;
+        count--;
+        if (p_p == 1 && count == 4) {
+            cout << "\nProducer is now ready\n";
+        }
+    } else {
+        cout << "\nBuffer is empty...\n";
+        c_p = 1;
+    }
+}
+
+void view(int n) {
+    cout << "\nData of buffer: ";
+    for (int i = 0; i < n; i++) {
+        cout << "- " << buffer[i] << " ";
+    }
+    cout << endl;
+}
+
+int main() {
+    int n, ch;
+    bool f = false;
+    
+    cout << "\nENTER THE COUNT FOR THE BUFFER: ";
+    cin >> n;
+
+    cout << "\nOptions";
+    cout << "\n1: Producer item";
+    cout << "\n2: Consumer item";
+    cout << "\n3: To view buffer";
+    cout << "\n4: Exit";
+
+    do {
+        cout << "\nEnter your choice: ";
+        cin >> ch;
+        switch (ch) {
+            case 1: producer(n); break;
+            case 2: consumer(n); break;
+            case 3: view(n); break;
+            case 4: f = true; break;
+            default: cout << "\nEnter correct choice\n"; break;
+        }
+    } while (!f);
+
+    return 0;
+}
+
+
+--(OR)--
+
+
+--(BHOOMIKA DEVARAJAN)--
+
+#include<stdio.h>
+#include<stdlib.h>
+ 
+int mutex=1,full=0,empty=3,x=0;
+ 
+int main()
+{
+int n;
+void producer();
+void consumer();
+int wait(int);
+int signal(int);
+printf("\n1.Producer\n2.Consumer\n3.Exit");
+while(1)
+{
+printf("\nEnter your choice:");
+scanf("%d",&n);
+switch(n)
+{
+case 1: if((mutex==1)&&(empty!=0))
+producer();
+else
+printf("Buffer is full!!");
+break;
+case 2: if((mutex==1)&&(full!=0))
+consumer();
+else
+printf("Buffer is empty!!");
+break;
+case 3:
+exit(0);
+break;
+}
+}
+return 0;
+}
+ 
+int wait(int s)
+{
+return (--s);
+}
+ 
+int signal(int s)
+{
+return(++s);
+}
+ 
+void producer()
+{
+mutex=wait(mutex);
+full=signal(full);
+empty=wait(empty);
+x++;
+printf("\nProducer produces the item %d",x);
+mutex=signal(mutex);
+}
+ 
+void consumer()
+{
+mutex=wait(mutex);
+full=wait(full);
+empty=signal(empty);
+printf("\nConsumer consumes item %d",x);
+x--;
+mutex=signal(mutex);
+}
+
+************************************************************************************************************************************************************************
+
+5) a. Write a shell program to find the greatest of three numbers.
+
+echo "Enter three numbers"
+read a b c
+if[$a -gt $b] && [$a -gt $c]; then
+echo "a is greater"
+elif [$b -gt $c]; then
+echo "b is greater"
+else
+echo "c is greater"
+fi
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+   b. Write a C/C++ program to simulate FCFS page replacement algorithm.
+
+#include <iostream>
+using namespace std;
+
+int main() {
+    int i, j, n, a[50], frame[10], no, k, avail, count = 0;
+
+    cout << "\n_FIFO PAGE REPLACEMENT ALGORITHM:\n";
+    cout << "\n\nENTER THE NUMBER OF PAGES:\n";
+    cin >> n;
+
+    cout << "\nENTER THE PAGE NUMBER:\n";
+    for (i = 1; i <= n; i++) {
+        cin >> a[i];
+    }
+
+    cout << "\nENTER THE NUMBER OF FRAMES:\n";
+    cin >> no;
+
+    for (i = 0; i < no; i++) {
+        frame[i] = -1;
+    }
+
+    j = 0;
+    cout << "Reg page\t Frames\n";
+    for (i = 1; i <= n; i++) {
+        cout << a[i] << "\t\t";
+        avail = 0;
+
+        for (k = 0; k < no; k++) {
+            if (frame[k] == a[i]) {
+                avail = 1;
+            }
+        }
+
+        if (avail == 0) {
+            frame[j] = a[i];
+            j = (j + 1) % no;
+            count++;
+
+            for (k = 0; k < no; k++) {
+                cout << frame[k] << "\t";
+            }
+        }
+        cout << "\n";
+    }
+
+    cout << "\nTotal number of Page Fault Is " << count << endl;
+    return 0;
+}
+
+
+--(OR)--
+
+--(BHOOMIKA DEVARAJAN)--
+
+#include <iostream>
+#include <vector>
+#include <queue>
+#include <unordered_set>
+
+using namespace std;
+
+int main() {
+    int numFrames, numPages;
+    cout << "Enter the number of frames: ";
+    cin >> numFrames;
+    cout << "Enter the number of pages: ";
+    cin >> numPages;
+
+    vector<int> pages(numPages);
+    cout << "Enter the page reference string: ";
+    for (int i = 0; i < numPages; ++i) {
+        cin >> pages[i];
+    }
+
+    unordered_set<int> frames;
+    queue<int> pageQueue;
+    int pageFaults = 0;
+
+    for (int i = 0; i < numPages; ++i) {
+        int currentPage = pages[i];
+
+        if (frames.size() < numFrames) {
+            if (frames.find(currentPage) == frames.end()) {
+                frames.insert(currentPage);
+                pageQueue.push(currentPage);
+                pageFaults++;
+            }
+        } else {
+            if (frames.find(currentPage) == frames.end()) {
+                int oldestPage = pageQueue.front();
+                pageQueue.pop();
+                frames.erase(oldestPage);
+
+                frames.insert(currentPage);
+                pageQueue.push(currentPage);
+                pageFaults++;
+            }
+        }
+
+        // Display the current state of frames
+        cout << "Frames: ";
+        for (auto frame : frames) {
+            cout << frame << " ";
+        }
+        cout << endl;
+    }
+
+    cout << "Total page faults: " << pageFaults << endl;
+
+    return 0;
+}
+
+************************************************************************************************************************************************************************
+
+6) a. Write a C program to check whether a given file is in a directory or not.
+
+#include <iostream>
+#include <filesystem>
+
+using namespace std;
+namespace fs = std::filesystem;
+
+int main() {
+    string directory;
+    string filename;
+
+    cout << "Enter the directory path: ";
+    cin >> directory;
+
+    cout << "Enter the filename: ";
+    cin >> filename;
+
+    // Construct the full file path
+    fs::path filePath = fs::path(directory) / filename;
+
+    // Check if the file exists
+    if (fs::exists(filePath)) {
+        cout << "The file " << filename << " exists in the directory " << directory << "." << endl;
+    } else {
+        cout << "The file " << filename << " does not exist in the directory " << directory << "." << endl;
+    }
+
+    return 0;
+}
+
+--(OR)--
+
+
+--(BHOOMIKA DEVARAJAN)--
+
+#include <iostream>
+#include <filesystem>
+#include <string>
+
+namespace fs = std::filesystem;
+
+bool file_exists_in_directory(const std::string& directory, const std::string& filename) {
+    try {
+        for (const auto& entry : fs::directory_iterator(directory)) {
+            if (entry.path().filename() == filename) {
+                return true;
+            }
+        }
+    } catch (const fs::filesystem_error& e) {
+        std::cerr << "Error accessing directory: " << e.what() << '\n';
+        return false;
+    }
+    return false;
+}
+
+int main() {
+    std::string directory;
+    std::string filename;
+
+    // Get the directory path from the user
+    std::cout << "Enter the directory path: ";
+    std::getline(std::cin, directory);
+
+    // Get the filename from the user
+    std::cout << "Enter the filename: ";
+    std::getline(std::cin, filename);
+
+    // Check if the file exists in the directory
+    if (file_exists_in_directory(directory, filename)) {
+        std::cout << "The file '" << filename << "' exists in the directory '" << directory << "'.\n";
+    } else {
+        std::cout << "The file '" << filename << "' does not exist in the directory '" << directory << "'.\n";
+    }
+
+    return 0;
+}
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+   b. Write a C/C++ program to simulate SJF CPU scheduling algorithm.
+
+ // Online C++ compiler to run C++ program online
+#include<iostream>
+using namespace std;
+
+int main()
+{
+    int n, at[10], bt[10], wt[10], tat[10], ct[10], p[10], sum, i, j, k, temp;
+    float totaltat = 0, totalwt = 0;
+    
+    cout << "Enter the total number of processes: ";
+    cin >> n;
+    
+    cout << "\nEnter the process number:\n";
+    for (i = 0; i < n; i++)
+        cin >> p[i];
+    
+    cout << "\nEnter The Process Burst Time\n";
+    for (i = 0; i < n; i++)
+    {
+        cout << "Enter Burst time of process[" << i + 1 << "]: ";
+        cin >> bt[i];
+    }
+    
+    // Apply Bubble sort to sort according to burst time and process number
+    for (i = 0; i < n; i++)
+    {
+        for( j=i+1;j<n;j++)
+        {
+            if(bt[i]>bt[j])
+            {
+                temp=bt[i];
+                bt[i]=bt[j];
+                bt[j]=temp;
+            }
+        }
+    }
+    
+    // Calculate completion time of processes
+    sum = 0;
+    for (j = 0; j < n; j++)
+    {
+        sum += bt[j];
+        ct[j] = sum;
+        cout << ct[j] << "\t";
+    }
+    cout << endl;
+
+    // Calculate Turn Around time
+    for (k = 0; k < n; k++)
+    {
+        tat[k] = ct[k];
+        totaltat += tat[k];
+    }
+    
+    // Calculate Waiting time
+    for (k = 0; k < n; k++)
+    {
+        wt[k] = tat[k] - bt[k];
+        totalwt += wt[k];
+    }
+    
+    cout << "\nProcess\tBT\tTAT\tWT\n\n\n";
+    for (i = 0; i < n; i++)
+    {
+        cout << "\nP" << i + 1 << "\t " << bt[i] << "\t " << tat[i] << "\t " << wt[i] << "\t\n";
+    }
+    
+    cout << "\nAverage Turnaround Time: " << totaltat / n << endl;
+    cout << "\nAverage Waiting Time: " << totalwt / n << endl;
+    
+    return 0;
+}
+
+***********************************************************************************************************************************************************************
+
+
+7) a. Write a C program simulate process system calls.
+
+  #include <iostream>
+#include <unistd.h>
+#include <cstdlib>
+
+using namespace std;
+
+int main() {
+    int pid;
+    pid = fork();
+
+    if (pid < 0) {
+        cout << "The fork cannot be created" << endl;
+        exit(0);
+    } else if (pid == 0) {
+        execlp("/bin/ls", "ls", NULL);
+        cout << "\n The process id of the child: " << getpid() << endl;
+        cout << "\n The process id of the parent: " << getppid() << endl;
+    } else {
+        cout << "\n The process id of the parent: " << getpid() << endl;
+        cout << "\n The process id of the grandparent: " << getppid() << endl;
+    }
+
+    return 0;
+}
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+   b. Write a C/Ct+ program to check whether a given system is safe or not.
+
+  #include <iostream>
+using namespace std;
+
+int main() {
+    int available[3], work[5], max[5][3], allocation[5][3], need[5][3], safe[5], totalres[3];
+    char finish[5];
+    int i, j, k, totalloc = 0, state, value = 0;
+
+    cout << "Enter Instances of each Resource: ";
+    for (i = 0; i < 3; i++) {
+        cin >> totalres[i];
+    }
+
+    cout << "Enter Maximum resources for each process: ";
+    for (i = 0; i < 5; i++) {
+        for (j = 0; j < 3; j++) {
+            cout << "\nEnter process " << i << " Resource " << (j + 1) << ": ";
+            cin >> max[i][j];
+        }
+    }
+
+    cout << "Enter number of resources allocated to each Process: ";
+    for (i = 0; i < 5; i++) {
+        for (j = 0; j < 3; j++) {
+            cout << "\nEnter the resource of R" << (j + 1) << " allocated to process " << i << ": ";
+            cin >> allocation[i][j];
+        }
+    }
+
+    // Calculate need matrix
+    for (i = 0; i < 5; i++) {
+        for (j = 0; j < 3; j++) {
+            need[i][j] = max[i][j] - allocation[i][j];
+        }
+    }
+
+    // Initialize finish array to 'f'
+    for (i = 0; i < 5; i++) {
+        finish[i] = 'f';
+    }
+
+    // Calculate available resources
+    for (i = 0; i < 3; i++) {
+        totalloc = 0;
+        for (j = 0; j < 5; j++) {
+            totalloc += allocation[j][i];
+        }
+        available[i] = totalres[i] - totalloc;
+        work[i] = available[i];
+    }
+
+    // Print allocated resources
+    cout << "\nAllocated Resources:\n";
+    for (i = 0; i < 5; i++) {
+        for (j = 0; j < 3; j++) {
+            cout << allocation[i][j] << " ";
+        }
+        cout << endl;
+    }
+
+    // Print maximum resources
+    cout << "\nMaximum Resources:\n";
+    for (i = 0; i < 5; i++) {
+        for (j = 0; j < 3; j++) {
+            cout << max[i][j] << " ";
+        }
+        cout << endl;
+    }
+
+    // Print needed resources
+    cout << "\nNeeded Resources:\n";
+    for (i = 0; i < 5; i++) {
+        for (j = 0; j < 3; j++) {
+            cout << need[i][j] << " ";
+        }
+        cout << endl;
+    }
+
+    // Print available resources
+    cout << "\nAvailable Resources:\n";
+    for (i = 0; i < 3; i++) {
+        cout << available[i] << " ";
+    }
+    cout << endl;
+
+    // Banker's Algorithm to find safe sequence
+    for (i = 0; i < 5; i++) {
+        for (j = 0; j < 3; j++) {
+            if ((finish[i] == 'f') && (need[i][j] <= work[j])) {
+                state = 1;
+            } else {
+                state = 0;
+                break;
+            }
+        }
+        if (state == 1) {
+            for (j = 0; j < 3; j++) {
+                work[j] += allocation[i][j];
+            }
+            finish[i] = 't';
+            safe[value] = i;
+            ++value;
+        }
+        if (i == 4) {
+            if (value == 5) {
+                break;
+            } else {
+                i = -1;
+            }
+        }
+    }
+
+    // Print safe sequence
+    cout << "\nSafe States are: ";
+    for (i = 0; i < 5; i++) {
+        cout << "P" << safe[i] << " ";
+    }
+    cout << endl;
+
+    return 0;
+}
+
+  
+***********************************************************************************************************************************************************************
+
+8) a. Write a shell program to find the sum of n numbers.
+
+echo "Enter the number"
+read n
+sum=0
+for((i=1;i<=n;i++))
+do
+    sum=$((sum+i))
+done
+
+echo "The sum of $n numbers are $sum"
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+   b. Write a C/C++ program to simulate priority CPU scheduling algorithms.
+
+  #include<iostream>
+using namespace std;
+
+int main()
+{
+    int n, at[10], bt[10], wt[10], tat[10], ct[10], pr[10], sum, i, j, k, pos, temp;
+    float totaltat = 0, totalwt = 0;
+    
+    cout << "Enter the total number of processes: ";
+    cin >> n;
+    
+    cout << "\nEnter The Process Burst Time\n";
+    for (i = 0; i < n; i++)
+    {
+        cout << "Enter Burst time of process[" << i + 1 << "]: ";
+        cin >> bt[i];
+    }
+    
+    cout << "\nEnter The Priority of each process\n";
+    for (i = 0; i < n; i++)
+    {
+        cout << "Enter priority of process[" << i + 1 << "]: ";
+        cin >> pr[i];
+    }
+    
+    // Apply Selection sort to sort according to burst time and process priority
+    for (i = 0; i < n; i++)
+    {
+        pos = i;
+        for (j = i + 1; j < n; j++)
+        {
+            if (pr[j] < pr[pos])
+            {
+                pos = j;
+            }
+        }
+        // Swap priorities
+        temp = pr[i];
+        pr[i] = pr[pos];
+        pr[pos] = temp;
+
+        // Swap burst times
+        temp = bt[i];
+        bt[i] = bt[pos];
+        bt[pos] = temp;
+    }
+    
+    // Calculate completion time of processes
+    sum = 0;
+    for (j = 0; j < n; j++)
+    {
+        sum += bt[j];
+        ct[j] = sum;
+        cout << ct[j] << "\t";
+    }
+    cout << endl;
+
+    // Calculate Turn Around time
+    for (k = 0; k < n; k++)
+    {
+        tat[k] = ct[k];
+        totaltat += tat[k];
+    }
+    
+    // Calculate Waiting time
+    for (k = 0; k < n; k++)
+    {
+        wt[k] = tat[k] - bt[k];
+        totalwt += wt[k];
+    }
+    
+    cout << "\nProcess\tBT\tTAT\tWT\n\n\n";
+    for (i = 0; i < n; i++)
+    {
+        cout << "\nP" << i + 1 << "\t " << bt[i] << "\t " << tat[i] << "\t " << wt[i] << "\t\n";
+    }
+    
+    cout << "\nAverage Turnaround Time: " << totaltat / n << endl;
+    cout << "\nAverage Waiting Time: " << totalwt / n << endl;
+    
+    return 0;
+}
+
+***************************************************************************************************************************************************************************
+
+9) a. Write a menu driven shell program to perform the following operations.
+       i)-> To check whether a given year is a leap year or not.
+
+echo "Enter the year"
+read year
+a=$((year % 4))
+if [ $a -eq 0 ] ;
+then
+    echo "its a leap year"
+else
+    echo "its not a leap year"
+fi
+-------------------------------------------------------------------------------
+      ii)-> To find whether a given number is positive or negative or neither
+echo "Enter the Number"
+read n
+if [ $n -gt 0 ]; then
+echo "n is positive"
+elif [ $n -lt 0 ]; then
+echo "n is negative"
+else
+echo "n is zero"
+fi
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+   b. Write a C/C++ program to perform
+       i)-> stat system calls
+
+ #include <iostream>
+#include <sys/stat.h>
+#include <cstdlib>
+
+using namespace std;
+
+int main() {
+    struct stat s;
+    int a;
+    int b;
+
+    if (stat("suba", &s) == -1) {
+        perror("Error: cannot stat file");
+        exit(EXIT_FAILURE);
+    }
+
+    a = s.st_blksize;
+    b = s.st_size;
+
+    cout << "ALLOCATED SIZE OF THE FILE: " << a << endl;
+    cout << "ACTUAL SIZE OF THE FILE: " << b << endl;
+
+    return 0;
+}
+   
+
+      ii)-> FIFO Disk scheduling algorithm
+
+#include<bits/stdc++.h>
+using namespace std;
+int main() {
+    int n;
+    cout<<"Enter the size of the queue : ";
+    cin>>n;
+    cout<<"Enter the disk queue : ";
+    int disk[n];
+    for(int i=0 ; i<n ; i++) {
+        cin>>disk[i];
+    }
+    cout<<"Enter the initial head position : ";
+    int head;
+    cin>>head;
+    int tot_head_time = 0, no_of_head_movements = 0;
+    for(int i=0 ; i<n ; i++) {
+        tot_head_time += abs(head-disk[i]);
+        head = disk[i];
+        no_of_head_movements++;
+    }
+    cout<<"Toal seek time : "<<tot_head_time;
+    cout<<"\nNumber of head movements : "<<no_of_head_movements;
+}
+
+
+**************************************************************************************************************************************************************************
+ 
+10) a. Write a shell program to find whether the given number is odd or even.
+
+echo "Enter the number"
+read n
+a=$((n % 2))
+if [$a -eq 0]; 
+then
+   echo "even"
+else
+   echo "Odd"
+fi
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+    b. Write a C/C++ program 
+       i)-> Simulate FIFO page replacement algorithms.
+
+#include <iostream>
+using namespace std;
+
+int main() {
+    int i, j, n, a[50], frame[10], no, k, avail, count = 0;
+
+    cout << "\n_FIFO PAGE REPLACEMENT ALGORITHM:\n";
+    cout << "\n\nENTER THE NUMBER OF PAGES:\n";
+    cin >> n;
+
+    cout << "\nENTER THE PAGE NUMBER:\n";
+    for (i = 1; i <= n; i++) {
+        cin >> a[i];
+    }
+
+    cout << "\nENTER THE NUMBER OF FRAMES:\n";
+    cin >> no;
+
+    for (i = 0; i < no; i++) {
+        frame[i] = -1;
+    }
+
+    j = 0;
+    cout << "Reg page\t Frames\n";
+    for (i = 1; i <= n; i++) {
+        cout << a[i] << "\t\t";
+        avail = 0;
+
+        for (k = 0; k < no; k++) {
+            if (frame[k] == a[i]) {
+                avail = 1;
+            }
+        }
+
+        if (avail == 0) {
+            frame[j] = a[i];
+            j = (j + 1) % no;
+            count++;
+
+            for (k = 0; k < no; k++) {
+                cout << frame[k] << "\t";
+            }
+        }
+        cout << "\n";
+    }
+
+    cout << "\nTotal number of Page Fault Is " << count << endl;
+    return 0;
+}
+
+
+--(OR)--
+
+--(BHOOMIKA DEVARAJAN)--
+
+#include <iostream>
+#include <vector>
+#include <queue>
+#include <unordered_set>
+
+using namespace std;
+
+int main() {
+    int numFrames, numPages;
+    cout << "Enter the number of frames: ";
+    cin >> numFrames;
+    cout << "Enter the number of pages: ";
+    cin >> numPages;
+
+    vector<int> pages(numPages);
+    cout << "Enter the page reference string: ";
+    for (int i = 0; i < numPages; ++i) {
+        cin >> pages[i];
+    }
+
+    unordered_set<int> frames;
+    queue<int> pageQueue;
+    int pageFaults = 0;
+
+    for (int i = 0; i < numPages; ++i) {
+        int currentPage = pages[i];
+
+        if (frames.size() < numFrames) {
+            if (frames.find(currentPage) == frames.end()) {
+                frames.insert(currentPage);
+                pageQueue.push(currentPage);
+                pageFaults++;
+            }
+        } else {
+            if (frames.find(currentPage) == frames.end()) {
+                int oldestPage = pageQueue.front();
+                pageQueue.pop();
+                frames.erase(oldestPage);
+
+                frames.insert(currentPage);
+                pageQueue.push(currentPage);
+                pageFaults++;
+            }
+        }
+
+        // Display the current state of frames
+        cout << "Frames: ";
+        for (auto frame : frames) {
+            cout << frame << " ";
+        }
+        cout << endl;
+    }
+
+    cout << "Total page faults: " << pageFaults << endl;
+
+    return 0;
+}
+
+      ii)-> Perform operations on fork () and exec() system calls
+#include <iostream>
+#include <unistd.h>
+#include <cstdlib>
+
+using namespace std;
+
+int main() {
+    int pid;
+    pid = fork();
+
+    if (pid < 0) {
+        cout << "The fork cannot be created" << endl;
+        exit(0);
+    } else if (pid == 0) {
+        execlp("/bin/ls", "ls", NULL);
+        cout << "\n The process id of the child: " << getpid() << endl;
+        cout << "\n The process id of the parent: " << getppid() << endl;
+    } else {
+        cout << "\n The process id of the parent: " << getpid() << endl;
+        cout << "\n The process id of the grandparent: " << getppid() << endl;
+    }
+
+    return 0;
+}
